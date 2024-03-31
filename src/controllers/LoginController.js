@@ -22,8 +22,6 @@ module.exports = {
                 return res.status(422).json({ status: false, message: 'Incorrect password' });
             }
 
-            return res.json(process.env.JWT_SECRET_KEY);
-
             const token = generateToken(user);
 
             if (!token) {
