@@ -1,4 +1,5 @@
 const UserModel = require('../models/User');
+const bcrypt = require('bcrypt');
 
 module.exports = {
     list: async (data) => {
@@ -14,7 +15,10 @@ module.exports = {
 
     create: async (fields) => {
         try {
+            fields.password  = await bcrypt.hash(fields.password, 10); 
+            
             let record = await UserModel.create(fields);
+
             return record;
         }
         catch (ex) {

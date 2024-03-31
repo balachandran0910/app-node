@@ -1,5 +1,7 @@
 const UserService = require('../services/UserService');
 const mongoose = require('mongoose');
+const UserModel = require('../models/User');
+
 
 module.exports = {
     list: async (req, res) => {
@@ -14,9 +16,18 @@ module.exports = {
 
     create: async (req, res, next) => {
         try {
-            const record = await UserService.create(req.body);
-            return res.status(200).json({ status:true, message: 'Details added Successfully.' });
+            const mobile = req.body.mobile;
+
+            const user = await UserModel.findOne({ mobile });
+
+            if(!user){
+                const record = await UserService.create(req.body);
+                return res.status(200).json({ status:true, message: 'Details added Successfully.' });
+            }
+
+            return res.status(401).json({ status:false, message: 'User Already Exists' });
         } catch (error) {
+            // return res.json({error});
             if (error instanceof mongoose.Error.ValidationError) {
                 const errorMessages = {};
                 for (let field in error.errors) {
